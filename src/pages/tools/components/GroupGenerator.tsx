@@ -106,7 +106,9 @@ export const GroupGenerator = () => {
             wrap="off"
             value={inputText}
             maxLength={maxLength}
-            placeholder={'Paul McCartney\nJohn Lennon\nGeorge Harrison\nRingo Starr'}
+            placeholder={
+              "Paul McCartney\nJohn Lennon\nGeorge Harrison\nRingo Starr"
+            }
           />
         </div>
       </div>

@@ -20,7 +20,8 @@ const sectionItems: SectionItemProps[] = [
   },
   {
     title: "astrocreator",
-    tagline: "React web application for designing and sharing Stellaris empires.",
+    tagline:
+      "React web application for designing and sharing Stellaris empires.",
     href: "https://github.com/velolib/astrocreator",
     src: "/images/sections/astrocreator.webp",
     flair: "comingSoon",
@@ -38,9 +39,8 @@ const sectionItems: SectionItemProps[] = [
     href: "https://github.com/velolib/No-More-Games",
     src: "/images/sections/nmg.webp",
     flair: "archived",
-  }
+  },
 ];
-
 
 export const Projects = () => (
   <Section
@@ -48,7 +48,7 @@ export const Projects = () => (
     icon={<CodeBlock weight="regular" className="fill-white" />}
   >
     {sectionItems.map((value) => (
-      <SectionItem key={value.title} {...value}/>
+      <SectionItem key={value.title} {...value} />
     ))}
   </Section>
 );
