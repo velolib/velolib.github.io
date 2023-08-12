@@ -56,7 +56,7 @@ export const FindAndReplace: React.FC = () => {
       </div>
       <div className="flex flex-col h-full text-center">
         <h4 className="font-semibold text-lg">Output</h4>
-        <span className="mb-2">Your outputted text.</span>
+        <span className="mb-2">The outputted text.</span>
         <div className="border border-b-0 border-zinc-900">
           <div className="grid grid-cols-3">
             <input

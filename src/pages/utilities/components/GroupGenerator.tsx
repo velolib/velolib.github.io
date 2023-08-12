@@ -114,7 +114,7 @@ export const GroupGenerator = () => {
       </div>
       <div className="flex flex-col h-full text-center">
         <h4 className="font-semibold text-lg">Groups</h4>
-        <span className="mb-2">Enter your values each on a new line.</span>
+        <span className="mb-2">The outputted groups.</span>
         <div className="border border-b-0 border-zinc-900 grid grid-cols-2">
           <input
             className="bg-zinc-950 focus:outline-none p-2 border-r border-zinc-900"

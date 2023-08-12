@@ -1,7 +1,7 @@
 import { BrandingSection } from "@/pages/branding";
 import { Section } from "../../../components/Section";
 import { GallerySection } from "@/pages/gallery";
-import { ToolsSection } from "@/pages/tools";
+import { UtilitiesSection } from "@/pages/utilities";
 
 export const AboutMe = () => (
   <Section
@@ -16,6 +16,6 @@ export const AboutMe = () => (
   >
     <GallerySection />
     <BrandingSection />
-    <ToolsSection />
+    <UtilitiesSection />
   </Section>
 );

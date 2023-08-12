@@ -14,7 +14,7 @@ import { Gallery } from "./gallery";
 import { TypeAnimation } from "react-type-animation";
 import { Branding } from "./branding";
 import { NotFound } from "./404";
-import { Tools } from "./tools";
+import { Utilities } from "./utilities";
 
 const socials: Array<{
   link: string;
@@ -53,27 +53,43 @@ const socials: Array<{
   },
 ];
 
-// const techStack = [
-//   {
-//     link: "https://reactjs.org/",
-//     alt: "React",
-//     icon: "/images/stack/react.svg",
-//   },
-//   {
-//     link: "https://www.typescriptlang.org/",
-//     alt: "Typescript",
-//     icon: "/images/stack/typescript.svg",
-//   },
-//   {
-//     link: "https://tailwindcss.com/",
-//     alt: "TailwindCSS",
-//     icon: "/images/stack/tailwind.svg",
-//   },
-// ];
+const techStack = [
+  {
+    link: "https://reactjs.org/",
+    alt: "React",
+    icon: "/images/stack/react.svg",
+  },
+  {
+    link: "https://www.typescriptlang.org/",
+    alt: "Typescript",
+    icon: "/images/stack/typescript.svg",
+  },
+  {
+    link: "https://tailwindcss.com/",
+    alt: "TailwindCSS",
+    icon: "/images/stack/tailwind.svg",
+  },
+];
 
 export const Root = () => (
   <div className="overflow-x-hidden overflow-y-auto flex flex-col lg:flex-row h-screen">
     <aside className="flex h-auto items-center justify-center flex-col sticky top-0 bg-zinc-950 border-r border-zinc-900 lg:flex-[.6] p-4">
+      <div className="mt-4 mb-12 lg:absolute lg:top-0 w-full flex justify-center gap-4 items-center">
+        {techStack.map((tech) => (
+          <a
+            href={tech.link}
+            key={tech.alt}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img
+              alt={tech.alt}
+              src={tech.icon}
+              className="transition-all duration-200 hover:brightness-125 w-10 select-none"
+            />
+          </a>
+        ))}
+      </div>
       <span className="text-sm text-zinc-500">Hi, I&apos;m</span>
       <TypeAnimation
         sequence={["velo", 2500, "veloLib", 2500, "vlocitize", 2500]}
@@ -91,7 +107,7 @@ export const Root = () => (
         showcase every significant thing I&apos;ve made online. I like to
         challenge myself by designing software for niche purposes.
       </span>
-      <div className="mt-4 lg:m-0 lg:absolute lg:bottom-4 w-full flex justify-center gap-4">
+      <div className="mt-12 lg:absolute lg:bottom-4 w-full flex justify-center gap-4">
         {socials.map((social, idx) => (
           <a
             href={social.link}
@@ -113,7 +129,7 @@ export const Root = () => (
         <Route path="/" element={<Landing />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/branding" element={<Branding />} />
-        <Route path="/tools" element={<Tools />} />
+        <Route path="/utilities" element={<Utilities />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </main>
