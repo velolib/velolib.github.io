@@ -12,7 +12,7 @@ function App() {
         className: "w-8",
       }}
     >
-      <HashRouter>
+      <HashRouter basename='/'>
         <Root />
       </HashRouter>
     </IconContext.Provider>
