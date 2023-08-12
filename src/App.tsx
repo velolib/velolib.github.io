@@ -1,6 +1,6 @@
 import { Root } from "./pages";
 import { IconContext } from "@phosphor-icons/react";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 
 function App() {
   return (
@@ -12,9 +12,9 @@ function App() {
         className: "w-8",
       }}
     >
-      <BrowserRouter>
+      <HashRouter>
         <Root />
-      </BrowserRouter>
+      </HashRouter>
     </IconContext.Provider>
   );
 }

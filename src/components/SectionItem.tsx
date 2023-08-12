@@ -1,5 +1,6 @@
 import { ArrowRight, ArrowSquareOut } from "@phosphor-icons/react";
 import type React from "react";
+import { Link } from 'react-router-dom';
 
 export const SectionItemFlairs = {
   archived: (
@@ -29,8 +30,8 @@ export type SectionItemProps = {
 
 export const SectionItem: React.FC<SectionItemProps> = (props) => (
   <li className="border-b border-zinc-900">
-    <a
-      href={props.href || "/"}
+    <Link
+      to={props.href || "/"}
       className="text-left px-6 py-8 w-full flex relative overflow-hidden items-center group"
     >
       {!!props.src && (
@@ -55,6 +56,6 @@ export const SectionItem: React.FC<SectionItemProps> = (props) => (
       ) : (
         <ArrowSquareOut className="transition-colors duration-200 fill-zinc-400 group-hover:fill-zinc-50" />
       )}
-    </a>
+    </Link>
   </li>
 );
