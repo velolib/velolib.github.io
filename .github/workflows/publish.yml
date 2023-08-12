@@ -1,6 +1,17 @@
 name: Publish to GitHub Pages
 
-on:
+permissions:
+  contents: read
+  issues: write
+  packages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
+  pages: write
+  deployments: write
+
+on: 
   push:
     branches:
       - master
