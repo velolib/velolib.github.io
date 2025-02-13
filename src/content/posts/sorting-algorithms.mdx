@@ -1,0 +1,782 @@
+---
+title: "Sorting Algorithms"
+pubDate: 2025-02-12
+description: "Sorting algorithms implemented in Python."
+image: "../../assets/posts/sorting-algorithms/cover.png"
+imageAlt: "Graph of a sorting algorithm."
+tags: ["school", "python", "algorithms", "indonesian"]
+---
+
+This is a migrated post from my [hack.md](https://hackmd.io/zNOqE1hjQ1ajIqLsRSMRow) which I made for a school project.
+
+# Sorting Algorithms
+
+Mencakup:
+
+- Bubble Sort
+- Insertion Sort
+- Quick Sort
+- Merge Sort
+- Selection Sort
+
+```python=
+from abc import ABC
+import matplotlib.pyplot as plt
+import copy
+# made by: velo/malik
+
+class SortingAlgorithm(ABC):
+    def __init__(self):
+        pass
+
+    def sort(self, data):
+        raise NotImplementedError()
+
+
+class BubbleSort(SortingAlgorithm):
+    def __init__(self):
+        super().__init__()
+
+    def sort(self, data: list[int]):
+        n = len(data)
+        self.original = copy.deepcopy(data)
+        for i in range(n):
+            for j in range(0, n-i-1):
+                if data[j] > data[j+1]:
+                    data[j], data[j+1] = data[j+1], data[j]
+                    self.visualize(data, i, j)
+        return data
+
+    def visualize(self, data, iteration, j):
+        colors = ['blue' if x == j or x == j+1 else 'lightblue' for x in range(len(data))]
+
+        plt.clf()
+        plt.bar(range(len(data)), data, color=colors)
+
+        plt.title(f'Bubble Sort: {self.original} - Iteration {iteration}')
+
+        plt.savefig(f'./saves/bubblesort_{"".join([str(h) for h in self.original])}_{iteration:03d}_swap_{j:03d}.png')
+
+
+class InsertionSort(SortingAlgorithm):
+    def __init__(self):
+        super().__init__()
+
+    def sort(self, data: list[int]):
+        n = len(data)
+        self.original = copy.deepcopy(data)
+        for iteration in range(1, n):
+            key = data[iteration]
+            j = iteration - 1
+            while j >= 0 and key < data[j]:
+                data[j + 1] = data[j]
+                j -= 1
+            data[j + 1] = key
+            self.visualize(data, iteration, j)
+        return data
+
+    def visualize(self, data, iteration, j):
+        colors = ['blue' if x == j or x == iteration else 'lightblue' for x in range(len(data))]
+
+        plt.clf()
+        plt.bar(range(len(data)), data, color=colors)
+
+        plt.title(f'Insertion Sort: {self.original} - Iteration {iteration}')
+
+        plt.savefig(f'./saves/insertionsort_{"".join([str(h) for h in self.original])}_{iteration:03d}_swap_{j:03d}.png')
+
+
+class QuickSort(SortingAlgorithm):
+    def __init__(self):
+        super().__init__()
+        self.count = 0
+
+    def sort(self, data: list[int]):
+        self.original = copy.deepcopy(data)
+        self.visualize(data, 0, len(data) - 1, -1, -1)
+        self.quick_sort(data, 0, len(data) - 1)
+        self.visualize(data, 0, len(data) - 1, -1, -1)
+        return data
+
+    def quick_sort(self, data, low, high):
+        if low < high:
+            pi = self.partition(data, low, high)
+            self.quick_sort(data, low, pi - 1)
+            self.quick_sort(data, pi + 1, high)
+
+    def partition(self, data, low, high):
+        mid = (low + high) // 2
+        pivot = sorted([data[low], data[mid], data[high]])[1]
+
+        if pivot == data[low]:
+            data[low], data[high] = data[high], data[low]
+        elif pivot == data[mid]:
+            data[mid], data[high] = data[high], data[mid]
+
+        i = low - 1
+        for j in range(low, high):
+            if data[j] < pivot:
+                i += 1
+                data[i], data[j] = data[j], data[i]
+                self.visualize(data, low, high, i, j)
+
+        data[i + 1], data[high] = data[high], data[i + 1]
+        return i + 1
+
+    def visualize(self, data, low, high, i, j):
+        colors = ['blue' if x == i or x == j else 'lightblue' for x in range(len(data))]
+        plt.clf()
+        plt.bar(range(len(data)), data, color=colors)
+        plt.title(f'Quick Sort: {self.original} - Partition {low}-{high}')
+        plt.savefig(f'./saves/quicksort_{"".join([str(h) for h in self.original])}_{self.count}.png')
+        self.count += 1
+
+
+class MergeSort(SortingAlgorithm):
+    def __init__(self):
+        super().__init__()
+        self.count = 0
+
+    def sort(self, data: list[int]):
+        self.original = copy.deepcopy(data)
+        self.visualize(data, 0, len(data) - 1)
+        self.merge_sort(data, 0, len(data) - 1)
+        self.visualize(data, 0, len(data) - 1)
+        return data
+
+    def merge_sort(self, data, low, high):
+        if low < high:
+            mid = (low + high) // 2
+            self.merge_sort(data, low, mid)
+            self.merge_sort(data, mid + 1, high)
+            self.merge(data, low, mid, high)
+            self.visualize(data, low, high)
+
+    def merge(self, data, low, mid, high):
+        left = data[low:mid+1]
+        right = data[mid+1:high+1]
+
+        i = j = 0
+        k = low
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                data[k] = left[i]
+                i += 1
+            else:
+                data[k] = right[j]
+                j += 1
+            k += 1
+
+        while i < len(left):
+            data[k] = left[i]
+            i += 1
+            k += 1
+
+        while j < len(right):
+            data[k] = right[j]
+            j += 1
+            k += 1
+
+    def visualize(self, data, low, high):
+        colors = ['blue' if x >= low and x <= high else 'lightblue' for x in range(len(data))]
+        plt.clf()
+        plt.bar(range(len(data)), data, color=colors)
+        plt.title(f'Merge Sort: {self.original} - Merging {low}-{high}')
+        plt.savefig(f'./saves/mergesort_{"".join([str(h) for h in self.original])}_{self.count}.png')
+        self.count += 1
+
+
+class SelectionSort(SortingAlgorithm):
+    def __init__(self):
+        super().__init__()
+        self.count = 0
+
+    def sort(self, data: list[int]):
+        self.original = copy.deepcopy(data)
+        self.visualize(data, 0, len(data) - 1)
+        self.selection_sort(data)
+        self.visualize(data, 0, len(data) - 1)
+        return data
+
+    def selection_sort(self, data):
+        n = len(data)
+        for i in range(n):
+            min_idx = i
+            for j in range(i+1, n):
+                if data[j] < data[min_idx]:
+                    min_idx = j
+            data[i], data[min_idx] = data[min_idx], data[i]
+            self.visualize(data, i, min_idx)
+
+    def visualize(self, data, i, j):
+        colors = ['blue' if x == i or x == j else 'lightblue' for x in range(len(data))]
+        plt.clf()
+        plt.bar(range(len(data)), data, color=colors)
+        plt.title(f'Selection Sort: {self.original} - Swapping {i}-{j}')
+        plt.savefig(f'./saves/selectionsort_{"".join([str(h) for h in self.original])}_{self.count}.png')
+        self.count += 1
+
+
+def main():
+    test_cases = [
+        [2, 2, 1, 0, 4, 3, 7, 6],
+        [2, 2, 1, 0, 4, 8, 3, 2],
+        [2, 2, 1, 0, 4, 8, 6, 9],
+        [2, 2, 1, 0, 4, 6, 4, 3],
+        [2, 2, 1, 0, 4, 3, 7, 5],
+        [2, 2, 1, 0, 4, 1, 6, 2],
+        [2, 2, 1, 0, 4, 8, 7, 6],
+        [2, 2, 1, 0, 4, 6, 3, 5],
+        [2, 2, 1, 0, 4, 9, 3, 6],
+        [2, 2, 1, 0, 4, 5, 7, 6],
+    ]
+    for idx, item in enumerate(test_cases):
+        case = idx % 5
+        if case == 0:
+            algorithm = BubbleSort()
+        elif case == 1:
+            algorithm = InsertionSort()
+        elif case == 2:
+            algorithm = QuickSort()
+        elif case == 3:
+            algorithm = MergeSort()
+        else:
+            algorithm = SelectionSort()
+        result = algorithm.sort(item)
+        if result == sorted(item):
+            print(f"Sorting {item} with {algorithm.__class__.__name__} is correct")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+# Bubble Sort
+
+## Penjelasan
+
+```python=
+class BubbleSort(SortingAlgorithm):
+    def __init__(self):
+        super().__init__()
+
+    def sort(self, data: list[int]):
+        n = len(data)
+        self.original = copy.deepcopy(data)
+        for i in range(n):
+            for j in range(0, n-i-1):
+                if data[j] > data[j+1]:
+                    data[j], data[j+1] = data[j+1], data[j]
+                    self.visualize(data, i, j)
+        return data
+
+    def visualize(self, data, iteration, j):
+        colors = ['blue' if x == j or x == j+1 else 'lightblue' for x in range(len(data))]
+
+        plt.clf()
+        plt.bar(range(len(data)), data, color=colors)
+
+        plt.title(f'Bubble Sort: {self.original} - Iteration {iteration}')
+
+        plt.savefig(f'./saves/bubblesort_{"".join([str(h) for h in self.original])}_{iteration:03d}_swap_{j:03d}.png')
+```
+
+How it works:
+
+1. Initialization
+   Fungsi bubble sort menggunakan $n$ sebagai panjang array.
+
+```python
+        n = len(data)
+```
+
+2. Looping 1 ($i$)
+   Artinya, program melintasi seluruh array, dari elemen pertama sampai akhir dengan $i$ sebagai indeks elemen.
+
+```python
+        for i in range(n):
+```
+
+3. Looping 2 ($j$)
+   Iterasi dalam dimulai. Setiap iterasi $j$ akan membandingkan dua elemen bersebelahan dalam array.
+
+```python
+            for j in range(0, n-i-1):
+```
+
+4. Swap
+   Pada setiap langkah dalam iterasi dalam, dilakukan pengecekan apakah elemen ke-$j$ lebih besar dari elemen ke-($j+1$). Jika ya, dilakukan pertukaran.
+
+```python
+                if data[j] > data[j+1]:
+                    data[j], data[j+1] = data[j+1], data[j]
+                    self.visualize(data, i, j)
+```
+
+## Contoh
+
+Langkah-langkah yang ditampilkan hanya yang pada kondisi $N[j] > N[j+1]$, atau artinya apabila ada swap.
+
+### Input: $[2, 2, 1, 0, 4, 1, 6, 2]$
+
+| Swap           | Image                                                                          |
+| -------------- | ------------------------------------------------------------------------------ |
+| $i = 0, j = 1$ | ![bubblesort_22104162_000_swap_001](https://hackmd.io/_uploads/HyENEiOJ0.png)  |
+| $i = 0, j = 2$ | ![bubblesort_22104162_000_swap_002](https://hackmd.io/_uploads/SJgEVNj_JR.png) |
+| $i = 0, j = 4$ | ![bubblesort_22104162_000_swap_004](https://hackmd.io/_uploads/H1NEEod1R.png)  |
+| $i = 0, j = 6$ | ![bubblesort_22104162_000_swap_006](https://hackmd.io/_uploads/r1N44idkA.png)  |
+| $i = 1, j = 0$ | ![bubblesort_22104162_001_swap_000](https://hackmd.io/_uploads/rklNVVouJA.png) |
+| $i = 1, j = 1$ | ![bubblesort_22104162_001_swap_001](https://hackmd.io/_uploads/HkEVNs_y0.png)  |
+| $i = 1, j = 3$ | ![bubblesort_22104162_001_swap_003](https://hackmd.io/_uploads/HkgE4NodJ0.png) |
+| $i = 1, j = 5$ | ![bubblesort_22104162_001_swap_005](https://hackmd.io/_uploads/rJxV44ouyA.png) |
+| $i = 2, j = 0$ | ![bubblesort_22104162_002_swap_000](https://hackmd.io/_uploads/r1VE4j_yA.png)  |
+| $i = 2, j = 2$ | ![bubblesort_22104162_002_swap_002](https://hackmd.io/_uploads/rJWENNsdyA.png) |
+
+Final array: $[0, 1, 1, 2, 2, 2, 4, 6]$
+
+### Input: $[2, 2, 1, 0, 4, 3, 7, 6]$
+
+| Swap           | Image                                                                          |
+| -------------- | ------------------------------------------------------------------------------ |
+| $i = 0, j = 1$ | ![bubblesort_22104376_000_swap_001](https://hackmd.io/_uploads/B1w5qiOyR.png)  |
+| $i = 0, j = 2$ | ![bubblesort_22104376_000_swap_002](https://hackmd.io/_uploads/SJgP5cjdJR.png) |
+| $i = 0, j = 4$ | ![bubblesort_22104376_000_swap_004](https://hackmd.io/_uploads/HyDq5iOyR.png)  |
+| $i = 0, j = 6$ | ![bubblesort_22104376_000_swap_006](https://hackmd.io/_uploads/HJvc5jOkC.png)  |
+| $i = 1, j = 0$ | ![bubblesort_22104376_001_swap_000](https://hackmd.io/_uploads/BklP55jd10.png) |
+| $i = 1, j = 1$ | ![bubblesort_22104376_001_swap_001](https://hackmd.io/_uploads/B1_q5i_10.png)  |
+| $i = 2, j = 0$ | ![bubblesort_22104376_002_swap_000](https://hackmd.io/_uploads/rkPc5sukR.png)  |
+
+Final array: $[0, 1, 2, 2, 3, 4, 6, 7]$
+
+# Insertion Sort
+
+## Penjelasan
+
+```python=
+class InsertionSort(SortingAlgorithm):
+    def __init__(self):
+        super().__init__()
+
+    def sort(self, data: list[int]):
+        n = len(data)
+        self.original = copy.deepcopy(data)
+        for iteration in range(1, n):
+            key = data[iteration]
+            j = iteration - 1
+            while j >= 0 and key < data[j]:
+                data[j + 1] = data[j]
+                j -= 1
+            data[j + 1] = key
+            self.visualize(data, iteration, j)
+        return data
+
+    def visualize(self, data, iteration, j):
+        colors = ['blue' if x == j or x == iteration else 'lightblue' for x in range(len(data))]
+
+        plt.clf()
+        plt.bar(range(len(data)), data, color=colors)
+
+        plt.title(f'Insertion Sort: {self.original} - Iteration {iteration}')
+
+        plt.savefig(f'./saves/insertionsort_{"".join([str(h) for h in self.original])}_{iteration:03d}_swap_{j:03d}.png')
+```
+
+How it works:
+
+1. Initialization
+   Fungsi insertion sort menggunakan $n$ sebagai panjang array.
+
+```python
+n = len(data)
+```
+
+2. Looping
+   Untuk setiap elemen $iteration$ (mulai dari indeks 1), cek berulang-ulang sampai indeks 0 atau sampai ada elemen-elemen sebelumnya yang lebih besar dari $iteration$. Jika berhenti, maka pindahkan elemen ke indeks tersebut.
+
+```python
+        for iteration in range(1, n):
+            key = data[iteration]
+            j = iteration - 1
+            while j >= 0 and key < data[j]:
+                data[j + 1] = data[j]
+                j -= 1
+            data[j + 1] = key
+            self.visualize(data, iteration, j)
+```
+
+## Contoh
+
+### Input: $[2, 2, 1, 0, 4, 8, 3, 2]$
+
+![insertionsort_22104832_001_swap_000](https://hackmd.io/_uploads/HkI4k2uyC.png)
+![insertionsort_22104832_002_swap_-01](https://hackmd.io/_uploads/H1gLNJnd10.png)
+![insertionsort_22104832_003_swap_-01](https://hackmd.io/_uploads/SJUEkhukC.png)
+![insertionsort_22104832_004_swap_003](https://hackmd.io/_uploads/SJUVyhdyR.png)
+![insertionsort_22104832_005_swap_004](https://hackmd.io/_uploads/H1LNJhOyR.png)
+![insertionsort_22104832_006_swap_003](https://hackmd.io/_uploads/HklIV13ukR.png)
+![insertionsort_22104832_007_swap_003](https://hackmd.io/_uploads/H1U4J2_y0.png)
+
+Final array: $[0, 1, 2, 2, 2, 3, 4, 8]$
+
+### Input: $[2, 2, 1, 0, 4, 8, 7, 6]$
+
+![insertionsort_22104876_001_swap_000](https://hackmd.io/_uploads/Hky912uyA.png)
+![insertionsort_22104876_002_swap_-01](https://hackmd.io/_uploads/H1gcy3O1C.png)
+![insertionsort_22104876_003_swap_-01](https://hackmd.io/_uploads/Bke5k2OJR.png)
+![insertionsort_22104876_004_swap_003](https://hackmd.io/_uploads/HJl512dJA.png)
+![insertionsort_22104876_005_swap_004](https://hackmd.io/_uploads/Skl9yh_k0.png)
+![insertionsort_22104876_006_swap_004](https://hackmd.io/_uploads/Bklq13dyA.png)
+![insertionsort_22104876_007_swap_004](https://hackmd.io/_uploads/Bygx9Jh_yR.png)
+
+Final array: $[0, 1, 2, 2, 4, 6, 7, 8]$
+
+# Quick Sort
+
+## Penjelasan
+
+Quick Sort jenis "Median of Three"
+
+```python=
+class QuickSort(SortingAlgorithm):
+    def __init__(self):
+        super().__init__()
+        self.count = 0
+
+    def sort(self, data: list[int]):
+        self.original = copy.deepcopy(data)
+        self.visualize(data, 0, len(data) - 1, -1, -1)
+        self.quick_sort(data, 0, len(data) - 1)
+        self.visualize(data, 0, len(data) - 1, -1, -1)
+        return data
+
+    def quick_sort(self, data, low, high):
+        if low < high:
+            pi = self.partition(data, low, high)
+            self.quick_sort(data, low, pi - 1)
+            self.quick_sort(data, pi + 1, high)
+
+    def partition(self, data, low, high):
+        mid = (low + high) // 2
+        pivot = sorted([data[low], data[mid], data[high]])[1]
+
+        if pivot == data[low]:
+            data[low], data[high] = data[high], data[low]
+        elif pivot == data[mid]:
+            data[mid], data[high] = data[high], data[mid]
+
+        i = low - 1
+        for j in range(low, high):
+            if data[j] < pivot:
+                i += 1
+                data[i], data[j] = data[j], data[i]
+                self.visualize(data, low, high, i, j)
+
+        data[i + 1], data[high] = data[high], data[i + 1]
+        return i + 1
+
+    def visualize(self, data, low, high, i, j):
+        colors = ['blue' if x == i or x == j else 'lightblue' for x in range(len(data))]
+        plt.clf()
+        plt.bar(range(len(data)), data, color=colors)
+        plt.title(f'Quick Sort: {self.original} - Partition {low}-{high}')
+        plt.savefig(f'./saves/quicksort_{"".join([str(h) for h in self.original])}_{self.count}.png')
+        self.count += 1
+```
+
+How it works:
+
+1. Untuk contoh, array $N = [2, 1, 4, 6, 8]$
+2. Pivoting
+   Ambil pivot yaitu median dari awal, tengah, dan akhir array, yaitu $\text{pivot} = \text{median}([2, 4, 8]) = 4$
+   Pivot diposisikan di akhir data.
+   Jika pivot bukan elemen pertama, maka swap dilakukan untuk memindahkannya ke akhir.
+
+```python
+        mid = (low + high) // 2
+        pivot = sorted([data[low], data[mid], data[high]])[1]
+
+        if pivot == data[low]:
+            data[low], data[high] = data[high], data[low]
+        elif pivot == data[mid]:
+            data[mid], data[high] = data[high], data[mid]
+```
+
+3. Iterating and Partitioning
+   Iterasi dilakukan pada seluruh data. Setiap elemen dibandingkan dengan pivot. Jika elemen lebih kecil dari pivot, maka elemen tersebut dipindahkan ke sebelah kiri (partisi kiri).
+
+```python
+        i = low - 1
+        for j in range(low, high):
+            if data[j] < pivot:
+                i += 1
+                data[i], data[j] = data[j], data[i]
+                self.visualize(data, low, high, i, j)
+
+        data[i + 1], data[high] = data[high], data[i + 1]
+```
+
+4. Recursion
+   Panggilan rekursif dilakukan untuk dua bagian data yang terpisah, yaitu bagian sebelum pivot dan bagian setelah pivot.
+
+```python
+    def quick_sort(self, data, low, high):
+        if low < high:
+            pi = self.partition(data, low, high)
+            self.quick_sort(data, low, pi - 1)
+            self.quick_sort(data, pi + 1, high)
+```
+
+## Contoh
+
+### Input: $[2, 2, 1, 0, 4, 6, 3, 5]$
+
+![quicksort_22104635_0](https://hackmd.io/_uploads/ByUlV3_10.png)
+![quicksort_22104635_1](https://hackmd.io/_uploads/H1LxVhu1R.png)
+![quicksort_22104635_2](https://hackmd.io/_uploads/BygIgE3_yR.png)
+![quicksort_22104635_3](https://hackmd.io/_uploads/ryg8gVhukR.png)
+![quicksort_22104635_4](https://hackmd.io/_uploads/SyxIxE2u10.png)
+![quicksort_22104635_5](https://hackmd.io/_uploads/rkUeEhOyC.png)
+![quicksort_22104635_6](https://hackmd.io/_uploads/Skl8l42d1R.png)
+![quicksort_22104635_7](https://hackmd.io/_uploads/rJUxNhO1R.png)
+![quicksort_22104635_8](https://hackmd.io/_uploads/H18gE2dyR.png)
+
+Final array: $[0, 1, 2, 2, 3, 4, 5, 6]$
+
+### Input: $[2, 2, 1, 0, 4, 8, 6, 9]$
+
+![quicksort_22104869_0](https://hackmd.io/_uploads/HyJowpOJR.png)
+![quicksort_22104869_1](https://hackmd.io/_uploads/SJxJivTdkA.png)
+![quicksort_22104869_2](https://hackmd.io/_uploads/rJe1jPadJR.png)
+![quicksort_22104869_3](https://hackmd.io/_uploads/SyyoPT_1C.png)
+![quicksort_22104869_4](https://hackmd.io/_uploads/ry1iPpOk0.png)
+![quicksort_22104869_5](https://hackmd.io/_uploads/BygJsDpu1R.png)
+![quicksort_22104869_6](https://hackmd.io/_uploads/ByekoDadyC.png)
+![quicksort_22104869_7](https://hackmd.io/_uploads/SyJiP6dJ0.png)
+![quicksort_22104869_8](https://hackmd.io/_uploads/SkxWOaOy0.png)
+
+Final array: $[0, 1, 2, 2, 4, 6, 8, 9]$
+
+# Merge Sort
+
+## Penjelasan
+
+```python=
+class MergeSort(SortingAlgorithm):
+    def __init__(self):
+        super().__init__()
+        self.count = 0
+
+    def sort(self, data: list[int]):
+        self.original = copy.deepcopy(data)
+        self.visualize(data, 0, len(data) - 1)
+        self.merge_sort(data, 0, len(data) - 1)
+        self.visualize(data, 0, len(data) - 1)
+        return data
+
+    def merge_sort(self, data, low, high):
+        if low < high:
+            mid = (low + high) // 2
+            self.merge_sort(data, low, mid)
+            self.merge_sort(data, mid + 1, high)
+            self.merge(data, low, mid, high)
+            self.visualize(data, low, high)
+
+    def merge(self, data, low, mid, high):
+        left = data[low:mid+1]
+        right = data[mid+1:high+1]
+
+        i = j = 0
+        k = low
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                data[k] = left[i]
+                i += 1
+            else:
+                data[k] = right[j]
+                j += 1
+            k += 1
+
+        while i < len(left):
+            data[k] = left[i]
+            i += 1
+            k += 1
+
+        while j < len(right):
+            data[k] = right[j]
+            j += 1
+            k += 1
+
+    def visualize(self, data, low, high):
+        colors = ['blue' if x >= low and x <= high else 'lightblue' for x in range(len(data))]
+        plt.clf()
+        plt.bar(range(len(data)), data, color=colors)
+        plt.title(f'Merge Sort: {self.original} - Merging {low}-{high}')
+        plt.savefig(f'./saves/mergesort_{"".join([str(h) for h in self.original])}_{self.count}.png')
+        self.count += 1
+```
+
+How it works:
+
+1. Divide and Conquer
+   Fungsi `merge_sort` membagi array menjadi array dengan panjang 1 dengan dipanggil secara rekursif.
+
+```python
+    def merge_sort(self, data, low, high):
+        if low < high:
+            mid = (low + high) // 2
+            self.merge_sort(data, low, mid)
+            self.merge_sort(data, mid + 1, high)
+            self.merge(data, low, mid, high)
+            self.visualize(data, low, high)
+```
+
+2. Merge
+   Fungsi `merge` menggabungkan array dengan urutan yang benar.
+
+```python
+    def merge(self, data, low, mid, high):
+        left = data[low:mid+1]
+        right = data[mid+1:high+1]
+
+        i = j = 0
+        k = low
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                data[k] = left[i]
+                i += 1
+            else:
+                data[k] = right[j]
+                j += 1
+            k += 1
+
+        while i < len(left):
+            data[k] = left[i]
+            i += 1
+            k += 1
+
+        while j < len(right):
+            data[k] = right[j]
+            j += 1
+            k += 1
+```
+
+## Contoh
+
+### Input: $[2, 2, 1, 0, 4, 6, 4, 3]$
+
+![mergesort_22104643_0](https://hackmd.io/_uploads/BJCH7JKkC.png)
+![mergesort_22104643_1](https://hackmd.io/_uploads/rk6SXJtJR.png)
+![mergesort_22104643_2](https://hackmd.io/_uploads/ryASXkFJC.png)
+![mergesort_22104643_3](https://hackmd.io/_uploads/H1aHXJKJR.png)
+![mergesort_22104643_4](https://hackmd.io/_uploads/rk0Bm1F1C.png)
+![mergesort_22104643_5](https://hackmd.io/_uploads/B1AH7kYyR.png)
+![mergesort_22104643_6](https://hackmd.io/_uploads/S1RBmJtkC.png)
+![mergesort_22104643_7](https://hackmd.io/_uploads/SJCSmkK10.png)
+![mergesort_22104643_8](https://hackmd.io/_uploads/B1RSm1t1R.png)
+
+Final array: $[0, 1, 2, 2, 3, 4, 4, 6]$
+
+### Input: $[2, 2, 1, 0, 4, 9, 3, 6]$
+
+![mergesort_22104936_0](https://hackmd.io/_uploads/S15sQyY1A.png)
+![mergesort_22104936_1](https://hackmd.io/_uploads/S19imkYyC.png)
+![mergesort_22104936_2](https://hackmd.io/_uploads/r1cjmJYJ0.png)
+![mergesort_22104936_3](https://hackmd.io/_uploads/By5iXyKkC.png)
+![mergesort_22104936_4](https://hackmd.io/_uploads/B1lqimkY10.png)
+![mergesort_22104936_5](https://hackmd.io/_uploads/BkqjQJKk0.png)
+![mergesort_22104936_6](https://hackmd.io/_uploads/BJcomJtyC.png)
+![mergesort_22104936_7](https://hackmd.io/_uploads/B1cjmktJA.png)
+![mergesort_22104936_8](https://hackmd.io/_uploads/rycj7JKyC.png)
+
+Final array: $[0, 1, 2, 2, 3, 4, 6, 9]$
+
+# Selection Sort
+
+## Penjelasan
+
+```python=
+class SelectionSort(SortingAlgorithm):
+    def __init__(self):
+        super().__init__()
+        self.count = 0
+
+    def sort(self, data: list[int]):
+        self.original = copy.deepcopy(data)
+        self.visualize(data, 0, len(data) - 1)
+        self.selection_sort(data)
+        self.visualize(data, 0, len(data) - 1)
+        return data
+
+    def selection_sort(self, data):
+        n = len(data)
+        for i in range(n):
+            min_idx = i
+            for j in range(i+1, n):
+                if data[j] < data[min_idx]:
+                    min_idx = j
+            data[i], data[min_idx] = data[min_idx], data[i]
+            self.visualize(data, i, min_idx)
+
+    def visualize(self, data, i, j):
+        colors = ['blue' if x == i or x == j else 'lightblue' for x in range(len(data))]
+        plt.clf()
+        plt.bar(range(len(data)), data, color=colors)
+        plt.title(f'Selection Sort: {self.original} - Swapping {i}-{j}')
+        plt.savefig(f'./saves/selectionsort_{"".join([str(h) for h in self.original])}_{self.count}.png')
+        self.count += 1
+```
+
+How it works:
+
+1. The Smallest
+   Fungsi mencari elemen terkecil di array dengan indeks lebih dari $i$ yang lebih kecil dari $\text{data}[\text{min_idx}]]$.
+
+```python
+        for i in range(n):
+            min_idx = i
+            for j in range(i+1, n):
+                if data[j] < data[min_idx]:
+                    min_idx = j
+```
+
+2. Swappage
+   Saat iterasi array dengan indeks lebih dari $i$ selesai, jika ditemukan yang matching maka akan di swap.
+
+```python
+            data[i], data[min_idx] = data[min_idx], data[i]
+```
+
+3. Looping
+   Looping berulang sampai selesai.
+
+## Contoh
+
+### Input: $[2, 2, 1, 0, 4, 3, 7, 5]$
+
+![selectionsort_22104375_0](https://hackmd.io/_uploads/BJfw8yF1A.png)
+![selectionsort_22104375_1](https://hackmd.io/_uploads/HJfPIyF1C.png)
+![selectionsort_22104375_2](https://hackmd.io/_uploads/ryGv81tyC.png)
+![selectionsort_22104375_3](https://hackmd.io/_uploads/HJMP81F1R.png)
+![selectionsort_22104375_4](https://hackmd.io/_uploads/S1GvLkY1A.png)
+![selectionsort_22104375_5](https://hackmd.io/_uploads/S1GvLJFJR.png)
+![selectionsort_22104375_6](https://hackmd.io/_uploads/HkzDIJYJR.png)
+![selectionsort_22104375_7](https://hackmd.io/_uploads/BJzP8ytkA.png)
+![selectionsort_22104375_8](https://hackmd.io/_uploads/rkGwLJtkA.png)
+![selectionsort_22104375_9](https://hackmd.io/_uploads/Hyfw8JFJA.png)
+
+Final array: $[0, 1, 2, 2, 3, 4, 5, 7]$
+
+## Input: $[2, 2, 1, 0, 4, 5, 7, 6]$
+
+![selectionsort_22104576_0](https://hackmd.io/_uploads/Hka5UJtJC.png)
+![selectionsort_22104576_1](https://hackmd.io/_uploads/Skpc8JYyR.png)
+![selectionsort_22104576_2](https://hackmd.io/_uploads/B1a9U1FJC.png)
+![selectionsort_22104576_3](https://hackmd.io/_uploads/Sya9IJK1C.png)
+![selectionsort_22104576_4](https://hackmd.io/_uploads/BJTc81KkR.png)
+![selectionsort_22104576_5](https://hackmd.io/_uploads/Hy69IJKyR.png)
+![selectionsort_22104576_6](https://hackmd.io/_uploads/BkpcLkKJ0.png)
+![selectionsort_22104576_7](https://hackmd.io/_uploads/rkpcUktkR.png)
+![selectionsort_22104576_8](https://hackmd.io/_uploads/rk69L1YJR.png)
+![selectionsort_22104576_9](https://hackmd.io/_uploads/ByT5LyYyR.png)
+
+Final array: $[0, 1, 2, 2, 4, 5, 6, 7]$

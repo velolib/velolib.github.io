@@ -1,0 +1,41 @@
+---
+import { ModeToggle } from "./ModeToggle";
+---
+
+<header
+  class="fixed top-0 left-0 right-0 z-50 dark:bg-zinc-950 bg-white flex items-center justify-center flex-col transition-colors border-b border-white dark:border-zinc-950 data-[active=true]:border-border"
+  id="navbar"
+>
+  <nav class="container mx-auto px-8 h-16 flex items-center justify-center">
+    <ul class="flex items-center justify-center">
+      <li class="mx-2">
+        <a
+          href="/"
+          class="dark:text-zinc-300 text-zinc-950 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors duration-200 px-3 py-2 rounded-md text-sm font-medium"
+        >
+          Return to Home
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <div class="absolute right-0 pr-4 top-16 mt-4 md:top-auto md:mt-0">
+    <ModeToggle client:load />
+  </div>
+</header>
+
+<script>
+  const navbar = document.getElementById("navbar");
+
+  function updateNavbarState() {
+    if (navbar) {
+      if (window.scrollY === 0) {
+        navbar.dataset.active = "false";
+      } else {
+        navbar.dataset.active = "true";
+      }
+    }
+  }
+
+  window.addEventListener("scroll", updateNavbarState);
+  updateNavbarState();
+</script>

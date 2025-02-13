@@ -1,11 +1,309 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  SiDiscord,
+  SiX,
+  SiGithub,
+  SiInstagram,
+  SiGmail,
+  SiSpotify,
+} from "@icons-pack/react-simple-icons";
+import Navbar from "../components/NavBar.astro";
+import { getCollection } from "astro:content";
+import { Image, Picture } from "astro:assets";
+import flagOfIndonesia from "../assets/flag-of-indonesia.svg";
+import gregtechFlowWEBP from "../assets/gregtech-flow.webp";
+import noMoreGamesWEBP from "../assets/no-more-games.webp";
+import sprinklerPNG from "../assets/sprinkler.png";
+import whrappedWEBP from "../assets/posts/fonar/chatters.png";
+import thisWebsitePNG from "../assets/this-website.png";
+import { SearchPosts } from "@/components/SearchPosts";
+import SectionDivider from "@/components/SectionDivider.astro";
+import type { ImageMetadata } from "astro";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const galleryImagesImport = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/content/gallery/*.webp",
+  { eager: true },
+);
+
+const galleryImages = Object.entries(galleryImagesImport)
+  .map(([key, value]) => ({
+    ...value,
+    path: key, // Add the key (file path) as a new field
+  }))
+  .sort((a, b) => b.default.src.localeCompare(a.default.src));
+
+const allPosts = await getCollection("posts");
+allPosts.sort(
+  (a, b) =>
+    new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime(),
+);
+
+const socialLinks = [
+  {
+    href: "https://discord.com/users/689289283286466573",
+    Icon: SiDiscord,
+    title: "Discord",
+  },
+  { href: "https://x.com/vlocitize", Icon: SiX, title: "X.com" },
+  { href: "https://github.com/velolib", Icon: SiGithub, title: "Github" },
+  {
+    href: "https://www.instagram.com/vlocitize/",
+    Icon: SiInstagram,
+    title: "Instagram",
+  },
+  { href: "mailto:vlocitize@gmail.com", Icon: SiGmail, title: "Email" },
+  {
+    href: "https://open.spotify.com/user/le2sdqta7f8158vtb62wc1nve",
+    Icon: SiSpotify,
+    title: "Spotify",
+  },
+];
+
+const projects = [
+  {
+    name: "velolib.github.io",
+    description: "My personal website",
+    tags: ["New"],
+    link: "https://github.com/velolib/velolib.github.io",
+    img: thisWebsitePNG,
+  },
+  {
+    name: "No More Games",
+    description: "Minecraft Minigames Map & Datapack",
+    tags: ["Archived"],
+    link: "https://github.com/velolib/No-More-Games",
+    img: noMoreGamesWEBP,
+  },
+  {
+    name: "GT: Flow",
+    description: "YAML Driven Flowcharts for GregTech: New Horizons",
+    tags: ["Archived"],
+    link: "https://github.com/velolib/gregtech-flow",
+    img: gregtechFlowWEBP,
+  },
+  {
+    name: "Sprinkler",
+    description: "School Project for TeSIS 2024-2025",
+    tags: ["School"],
+    link: "https://github.com/velolib/sprinkler",
+    img: sprinklerPNG,
+  },
+  {
+    name: "whrapped",
+    description: "WhatsApp chat analytics tool",
+    tags: ["Upcoming"],
+    link: "https://github.com/velolib/whrapped",
+    img: whrappedWEBP,
+  },
+];
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout title="Home">
+  <Navbar />
+  <main class="h-full">
+    <section
+      class="flex items-center justify-center flex-col h-dvh snap-end px-6 bg-mesh"
+      id="home"
+    >
+      <div
+        class="group flex flex-col items-center justify-center transition-transform translate-y-16 hover:translate-y-0"
+      >
+        <img
+          src="/favicon.png"
+          alt="velo Logo"
+          class="h-16 w-auto aspect-[1/1] rounded-full shadow-sm mb-4 translate-y-16 group-hover:translate-y-0 transition-transform"
+        />
+        <span
+          class="text-sm text-zinc-500 translate-y-16 transition-transform group-hover:translate-y-0"
+          >Hi, I'm</span
+        >
+        <div
+          class="select-none flex flex-col items-center justify-center text-6xl/14 font-bold text-transparent"
+        >
+          <span
+            class="bg-clip-text bg-gradient-to-r from-primary-300 to-secondary-300 animate-gradient text-center translate-y-16 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all blur group-hover:blur-none transform-gpu"
+            >veloLib</span
+          >
+          <h1
+            class="bg-clip-text bg-gradient-to-r from-primary-300 to-secondary-300 animate-gradient text-center"
+          >
+            velo
+          </h1>
+          <span
+            class="bg-clip-text bg-gradient-to-r from-primary-300 to-secondary-300 animate-gradient text-center -translate-y-16 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all blur group-hover:blur-none transform-gpu"
+            >vlocitize</span
+          >
+        </div>
+      </div>
+      <span class="text-xl dark:text-zinc-200 text-zinc-900 mt-4 text-center">
+        An aspiring software developer
+      </span>
+      <span class="text-center max-w-2xl mt-4 dark:text-zinc-300 text-zinc-800">
+        I'm Malik, and I'm from Jakarta, Indonesia
+        <Image
+          src={flagOfIndonesia}
+          alt="Flag of Indonesia"
+          class="h-5 w-auto aspect-[3/2] mb-1 rounded-md inline-block shadow-sm"
+        />
+        .<br />
+        This is the website where I showcase every significant thing I've made online.
+      </span>
+      <div class="mt-12 w-full flex justify-center gap-8 flex-wrap">
+        {
+          socialLinks.map(({ href, Icon, title }) => (
+            <a
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              class="transition-transform duration-200 hover:scale-105"
+            >
+              <Icon
+                className={`size-8 ${
+                  title === "Discord"
+                    ? "fill-[#5865F2]"
+                    : title === "X.com"
+                      ? "dark:fill-white fill-black"
+                      : title === "Github"
+                        ? "dark:fill-white fill-black"
+                        : title === "Instagram"
+                          ? "fill-[#FF0069]"
+                          : title === "Email"
+                            ? "fill-[#EA4335]"
+                            : title === "Spotify"
+                              ? "fill-[#1ED760]"
+                              : ""
+                }`}
+              />
+            </a>
+          ))
+        }
+      </div>
+    </section>
+    <SectionDivider />
+    <section
+      class="flex h-[calc(100dvh-4rem)] snap-end flex-col lg:flex-row items-center"
+      id="blog"
+    >
+      <div
+        class="flex items-center justify-center flex-col gap-2 lg:w-72 flex-shrink-0 lg:h-full w-full p-8"
+      >
+        <h2
+          class="text-4xl/16 font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-secondary-300"
+        >
+          Blog
+        </h2>
+        <p class="text-zinc-800 dark:text-zinc-300 text-center">
+          What I've written so far.
+        </p>
+      </div>
+      <SearchPosts client:load searchList={allPosts} />
+    </section>
+    <SectionDivider />
+    <section
+      class="flex h-[calc(100dvh-4rem)] snap-end flex-col lg:flex-row items-center"
+      id="projects"
+    >
+      <div
+        class="flex items-center justify-center flex-col gap-2 lg:w-72 flex-shrink-0 lg:h-full w-full p-8"
+      >
+        <h2
+          class="text-4xl/16 font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-secondary-300"
+        >
+          Projects
+        </h2>
+        <p class="text-zinc-800 dark:text-zinc-300 text-center">
+          Some of the projects I've worked on.
+        </p>
+      </div>
+      <div
+        class="flex-grow min-h-0 h-full px-6 xl:px-8 overflow-hidden flex flex-col"
+      >
+        <div
+          class="overflow-y-auto py-6 xl:py-8 h-full rounded-lg grow min-h-0"
+        >
+          <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-2 xl:gap-6">
+            {
+              projects.map((project) => (
+                <article class="bg-zinc-200 dark:bg-zinc-900 rounded-lg overflow-hidden group w-full shadow-md">
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="block h-full"
+                    aria-label={`View ${project.name} project`}
+                  >
+                    <div class="w-full overflow-hidden rounded-lg border border-border">
+                      <Image
+                        src={project.img || "/placeholder.svg"}
+                        alt={`${project.name} preview`}
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform aspect-video"
+                      />
+                    </div>
+                    <div class="p-4 flex flex-col gap-2">
+                      <h2 class="text-xl font-bold text-transparent bg-clip-text bg-zinc-900 dark:bg-zinc-200 group-hover:bg-gradient-to-r group-hover:from-primary-300 group-hover:to-secondary-300 transition-colors">
+                        {project.name}
+                      </h2>
+                      <p class="text-zinc-700 dark:text-zinc-400 text-sm">
+                        {project.description}
+                      </p>
+                      <div class="flex flex-wrap gap-2 mt-2">
+                        {project.tags?.map((tag) => (
+                          <span class="text-xs bg-zinc-900 text-zinc-200 dark:bg-zinc-200 dark:text-zinc-950 px-2 py-1 rounded-md">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </a>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+    <SectionDivider />
+    <section
+      class="flex h-[calc(100dvh-4rem)] snap-end flex-col lg:flex-row items-center"
+      id="gallery"
+    >
+      <div
+        class="flex items-center justify-center flex-col gap-2 lg:w-72 flex-shrink-0 lg:h-full w-full p-8"
+      >
+        <h2
+          class="text-4xl/16 font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-secondary-300"
+        >
+          Gallery
+        </h2>
+        <p class="text-zinc-800 dark:text-zinc-300 text-center">
+          I also take pictures.
+        </p>
+      </div>
+      <div
+        class="flex-grow min-h-0 h-full px-6 xl:px-8 overflow-hidden flex flex-col"
+      >
+        <div
+          class="overflow-y-auto py-6 xl:py-8 h-full rounded-lg grow min-h-0"
+        >
+          <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-2 xl:gap-6">
+            {
+              galleryImages.map((image) => (
+                <a
+                  class="size-full rounded-lg overflow-hidden shadow-md"
+                  href={`/gallery/${image.path.replace("/src/content/gallery/", "")}`}
+                >
+                  <Picture
+                    src={image.default}
+                    alt="Gallery Image"
+                    class="w-full h-full object-cover hover:scale-105 transition-transform"
+                  />
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

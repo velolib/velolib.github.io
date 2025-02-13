@@ -1,0 +1,46 @@
+---
+import { Image } from "astro:assets";
+import ReturnNavBar from "../components/ReturnNavBar.astro";
+import BaseLayout from "./BaseLayout.astro";
+import { displayDate } from "@/utils/date";
+const { frontmatter } = Astro.props;
+---
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.css"
+  integrity="sha384-WsHMgfkABRyG494OmuiNmkAOk8nhO1qE+Y6wns6v+EoNoTNxrWxYpl5ZYWFOLPCM"
+  crossorigin="anonymous"
+/>
+<BaseLayout title={frontmatter.title}>
+  <ReturnNavBar />
+  <article class="container mx-auto pb-8 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div
+      class="dark:text-zinc-200 text-zinc-950 bg-zinc-200 dark:bg-zinc-900 rounded-b-xl overflow-hidden"
+    >
+      <Image
+        src={frontmatter.image || "/placeholder.svg"}
+        alt={frontmatter.imageAlt}
+        class="w-full h-auto rounded-b-xl border border-border"
+      />
+      <div class="p-4 sm:p-6 bottom-0 w-full">
+        <h1
+          class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold pb-2 sm:pb-4 text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-secondary-300"
+        >
+          {frontmatter.title}
+        </h1>
+        <p class="text-base sm:text-lg md:text-xl my-2 sm:my-4">
+          {frontmatter.description}
+        </p>
+        <span class="text-sm sm:text-base"
+          >{displayDate(frontmatter.pubDate)}</span
+        >
+      </div>
+    </div>
+    <div
+      class="prose prose-zinc dark:prose-invert prose-sm sm:prose-base md:prose-lg p-4 sm:p-6 py-0 w-full max-w-none"
+    >
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  /* Primary Colors */
+  --color-primary-50: oklch(0.95 0.1437 232.44);
+  --color-primary-100: oklch(0.9 0.1437 232.44);
+  --color-primary-200: oklch(0.8 0.1437 232.44);
+  /* brand */
+  --color-primary-300: oklch(0.7059 0.1437 232.44);
+  --color-primary-400: oklch(0.6 0.1437 232.44);
+  --color-primary-500: oklch(0.5 0.1437 232.44);
+  --color-primary-600: oklch(0.4 0.1437 232.44);
+  --color-primary-700: oklch(0.3 0.1437 232.44);
+  --color-primary-800: oklch(0.2 0.1437 232.44);
+  --color-primary-900: oklch(0.1 0.1437 232.44);
+  --color-primary-950: oklch(0.05 0.1437 232.44);
+
+  /* Secondary Colors */
+  --color-secondary-50: oklch(0.95 0.1535 163.22);
+  --color-secondary-100: oklch(0.9 0.1535 163.22);
+  --color-secondary-200: oklch(0.8 0.1535 163.22);
+  /* brand */
+  --color-secondary-300: oklch(0.7729 0.1535 163.22);
+  --color-secondary-400: oklch(0.6 0.1535 163.22);
+  --color-secondary-500: oklch(0.5 0.1535 163.22);
+  --color-secondary-600: oklch(0.4 0.1535 163.22);
+  --color-secondary-700: oklch(0.3 0.1535 163.22);
+  --color-secondary-800: oklch(0.2 0.1535 163.22);
+  --color-secondary-900: oklch(0.1 0.1535 163.22);
+  --color-secondary-950: oklch(0.05 0.1535 163.22);
+}
+
+@layer base {
+  .prose {
+    :where(img) {
+      @apply rounded-md shadow-md;
+    }
+  }
+  html,
+  body {
+    @apply snap-y snap-mandatory overscroll-y-contain;
+  }
+
+  body {
+    @apply flex;
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 5s ease infinite;
+  }
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .bg-mesh {
+    background-color: hsla(0, 0%, 100%, 0);
+    background-image:
+      radial-gradient(
+        circle at 100% 100%,
+        var(--color-secondary-300) 0%,
+        transparent 45%
+      ),
+      radial-gradient(
+        circle at 0% 0%,
+        var(--color-primary-300) 0%,
+        transparent 45%
+      );
+    background-blend-mode: normal, normal;
+  }
+}
+
+@plugin "@tailwindcss/typography";
+
+@plugin "tailwindcss-animate";
+
+:root {
+  --radius: 0.6rem;
+
+  --border: var(--color-zinc-200);
+}
+
+.dark {
+  --border: var(--color-zinc-800);
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-border: var(--border);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+::-webkit-scrollbar {
+  @apply w-2 px-px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-md bg-zinc-800/30 dark:bg-zinc-200/30;
+}
