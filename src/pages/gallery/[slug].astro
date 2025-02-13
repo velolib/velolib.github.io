@@ -11,13 +11,18 @@ export function getStaticPaths() {
     { eager: true },
   );
 
-  return Object.entries(images).map(([path, image]) => ({
-    params: {
-      slug: path.split("/").pop() ?? "",
-    },
-    props: { image: image.default },
-  }));
+  const sortedImages = Object.entries(images)
+    .sort(([a], [b]) => b.localeCompare(a)) // Sort descending (newer first)
+    .map(([path, image]) => ({
+      params: {
+        slug: path.split("/").pop() ?? "",
+      },
+      props: { image: image.default },
+    }));
+
+  return sortedImages;
 }
+
 
 const { slug } = Astro.params;
 const { image } = Astro.props;
